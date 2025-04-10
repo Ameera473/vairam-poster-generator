@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Vairam Steel Company | Poster Generator</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background-color: white;
+            padding: 30px 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        h1 {
+            color: #d10000;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            color: #444;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        select,
+        input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+
+        input[type="submit"] {
+            background-color: #28a745;
+            color: white;
+            padding: 12px 25px;
+            font-size: 16px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #218838;
+        }
+
+        .footer {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #777;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>Vairam Steel Company</h1>
+        <h2>Dharapuram - Customer Poster Generator</h2>
+
+        <form action="/generate" method="post" enctype="multipart/form-data">
+            <label for="customer_name">Customer Name:</label>
+            <input type="text" id="customer_name" name="customer_name" required>
+
+            <label for="company">Choose Brand:</label>
+            <select id="company" name="company" required>
+                <option value="tatapipes">Tata Pipes</option>
+                <option value="everest">Everest</option>
+                <option value="ammantry">Amman TRY</option>
+                <option value="ars">ARS TMT</option>
+                <option value="swastik">Swastik </option>
+                <option value="sumangala">Sumangala TMT</option>
+                <option value="tatadurashine">Tata Durashine</option>
+            </select>
+
+            <label for="photo">Upload Customer Photo:</label>
+            <input type="file" id="photo" name="photo" accept="image/*" required>
+
+            <input type="submit" value="Generate Poster">
+        </form>
+
+        <div class="footer">
+            © 2025 Vairam Steel Company. All rights reserved.
+        </div>
+    </div>
+
+</body>
+
+</html>
