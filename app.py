@@ -2,49 +2,62 @@ from flask import Flask, render_template, request, send_file
 from PIL import Image, ImageDraw, ImageFont
 import os
 from datetime import datetime
-from io import BytesIO
 
 app = Flask(__name__)
 
+# Make sure output folder exists
+os.makedirs('output', exist_ok=True)
+
 @app.route('/')
 def index():
-    logos = os.listdir('static/logos')
-    return render_template('index.html', logos=logos)
+    return render_template('index.html')
 
 @app.route('/generate', methods=['POST'])
 def generate_poster():
-    shop_name = request.form['shop_name']
-    offer = request.form['offer']
-    place = request.form['place']
-    logo_file = request.form['logo']
+    customer_name = request.form['customer_name']
+    company = request.form['company']
+    photo = request.files['photo']
 
-    # Load background image
-    background = Image.open("static/background.jpg")
-    draw = ImageDraw.Draw(background)
+    # Create base poster with colorful background
+    poster = Image.new('RGB', (800, 1000), color='#f7d9e3')  # light pink background
+    draw = ImageDraw.Draw(poster)
 
-    # Load fonts (ensure these font files exist in your /fonts folder)
-    font_large = ImageFont.truetype("fonts/OpenSans-Bold.ttf", 50)
-    font_small = ImageFont.truetype("fonts/OpenSans-Regular.ttf", 30)
+    # Load fonts
+    font_large = ImageFont.truetype("arialbd.ttf", 50)
+    font_medium = ImageFont.truetype("arialbd.ttf", 36)
+    font_small = ImageFont.truetype("arial.ttf", 30)
 
-    # Write text on image
-    draw.text((50, 50), shop_name, font=font_large, fill="black")
-    draw.text((50, 120), offer, font=font_small, fill="black")
-    draw.text((50, 180), place, font=font_small, fill="black")
+    # Add customer photo
+    customer_img = Image.open(photo).resize((400, 400))
+    poster.paste(customer_img, (200, 50))
 
-    # Paste logo
-    logo_path = os.path.join('static/logos', logo_file)
-    logo = Image.open(logo_path).convert("RGBA")
-    logo = logo.resize((200, 200))
-    background.paste(logo, (background.width - 250, 50), logo)
+    # Add company logo
+    logo_path = os.path.join('static', 'logos', f'{company}.png')
+    if os.path.exists(logo_path):
+        logo_img = Image.open(logo_path).resize((150, 150))
+        poster.paste(logo_img, (325, 470), logo_img.convert("RGBA"))
 
-    # Save to BytesIO
-    img_io = BytesIO()
-    background.save(img_io, 'PNG')
-    img_io.seek(0)
+    # Add "Vairam Steel Company, Dharapuram" heading
+    draw.text((400, 640), "Vairam Steel Company", font=font_medium, fill="#D10000", anchor="mm")
+    draw.text((400, 680), "Dharapuram", font=font_small, fill="black", anchor="mm")
 
+    # Add Customer Name
+    draw.text((400, 730), f"{customer_name}", font=font_large, fill="black", anchor="mm")
+
+    # Add congratulation message
+    draw.text((400, 790), "Congratulations on your purchase!", font=font_small, fill="#008000", anchor="mm")
+
+    # Add Thank you and Visit again messages
+    draw.text((400, 840), "Thank you for purchasing with us", font=font_small, fill="#000080", anchor="mm")
+    draw.text((400, 880), "Visit Again!", font=font_small, fill="#FF4500", anchor="mm")
+
+    # Save poster
     timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
-    return send_file(img_io, mimetype='image/png', as_attachment=True,
-                     download_name=f"poster_{timestamp}.png")
+    filename = f"poster_{timestamp}.jpg"
+    filepath = os.path.join("output", filename)
+    poster.save(filepath)
+
+    return send_file(filepath, mimetype='image/jpeg', as_attachment=True, download_name=filename)
 
 if __name__ == '__main__':
     app.run(debug=True)
