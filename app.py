@@ -5,8 +5,21 @@ from datetime import datetime
 
 app = Flask(__name__)
 
-# Make sure output folder exists
+# Ensure output and static folders exist
 os.makedirs('output', exist_ok=True)
+os.makedirs(os.path.join('static', 'fonts'), exist_ok=True)
+
+# Load fonts
+def load_font(font_name, size):
+    try:
+        return ImageFont.truetype(os.path.join('static', 'fonts', font_name), size)
+    except:
+        return ImageFont.load_default()
+
+# Preload fonts
+font_large = load_font("OpenSans-Bold.ttf", 60)
+font_medium = load_font("OpenSans-SemiBold.ttf", 40)
+font_small = load_font("OpenSans-Regular.ttf", 30)
 
 @app.route('/')
 def index():
@@ -19,13 +32,8 @@ def generate_poster():
     photo = request.files['photo']
 
     # Create base poster with colorful background
-    poster = Image.new('RGB', (800, 1000), color='#f7d9e3')  # light pink background
+    poster = Image.new('RGB', (800, 1000), color='#f7d9e3')  # light pink
     draw = ImageDraw.Draw(poster)
-
-    # Load fonts
-    font_large = ImageFont.truetype("arialbd.ttf", 50)
-    font_medium = ImageFont.truetype("arialbd.ttf", 36)
-    font_small = ImageFont.truetype("arial.ttf", 30)
 
     # Add customer photo
     customer_img = Image.open(photo).resize((400, 400))
@@ -37,17 +45,11 @@ def generate_poster():
         logo_img = Image.open(logo_path).resize((150, 150))
         poster.paste(logo_img, (325, 470), logo_img.convert("RGBA"))
 
-    # Add "Vairam Steel Company, Dharapuram" heading
+    # Add texts with proper fonts
     draw.text((400, 640), "Vairam Steel Company", font=font_medium, fill="#D10000", anchor="mm")
     draw.text((400, 680), "Dharapuram", font=font_small, fill="black", anchor="mm")
-
-    # Add Customer Name
     draw.text((400, 730), f"{customer_name}", font=font_large, fill="black", anchor="mm")
-
-    # Add congratulation message
     draw.text((400, 790), "Congratulations on your purchase!", font=font_small, fill="#008000", anchor="mm")
-
-    # Add Thank you and Visit again messages
     draw.text((400, 840), "Thank you for purchasing with us", font=font_small, fill="#000080", anchor="mm")
     draw.text((400, 880), "Visit Again!", font=font_small, fill="#FF4500", anchor="mm")
 
