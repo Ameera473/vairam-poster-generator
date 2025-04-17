@@ -85,6 +85,26 @@
         <form action="/generate" method="post" enctype="multipart/form-data">
             <label for="customer_name">Customer Name:</label>
             <input type="text" id="customer_name" name="customer_name" required>
+            <label for="phone_number">Customer Phone Number:</label>
+            <input type="text" id="phone_number" name="phone_number" pattern="[0-9]{10}" maxlength="10" required>
+            <label for="main_city">Select Major City:</label>
+            <select id="main_city" name="main_city" required>
+                <option value="">-- Select Major City --</option>
+                <option value="Dhasarpatti">Dhasarpatti</option>
+                <option value="Pellampatti">Pellampatti</option>
+                <option value="Kallimanthayam">Kallimanthayam</option>
+                <option value="Peranium">Peranium</option>
+                <option value="Thoppampatti">Thoppampatti</option>
+                <option value="Koduvaai">Koduvaai</option>
+                <option value="Oothiyur">Oothiyur</option>
+
+
+
+            </select>
+
+            <label for="local_area">Enter Local Area / Village (Under Selected City):</label>
+            <input type="text" id="local_area" name="local_area" placeholder="" required>
+
 
             <label for="company">Choose Brand:</label>
             <select id="company" name="company" required>
@@ -102,6 +122,11 @@
 
             <input type="submit" value="Generate Poster">
         </form>
+        <a href="{{ url_for('download_excel') }}">
+            <button style="padding: 10px 20px; font-size: 16px;">📥 Download Customer Data (Excel)</button>
+        </a>
+
+
 
         <div class="footer">
             © 2025 Vairam Steel Company. All rights reserved.
